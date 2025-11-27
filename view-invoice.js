@@ -138,3 +138,59 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
   }
 });
+
+// ... (kod sedia ada anda di bahagian atas) ...
+
+// --- FUNGSI UNTUK MENJANA PDF ---
+function generatePDF() {
+    const element = document.getElementById('invoice-container');
+    
+    // Paparkan mesej loading
+    const downloadBtn = document.getElementById('download-pdf-btn');
+    const originalIcon = downloadBtn.innerHTML;
+    downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menjana...';
+    downloadBtn.style.pointerEvents = 'none'; // Lumpuhkan butang semasa proses
+
+    // Gunakan html2canvas untuk menjadikan elemen menjadi imej
+    html2canvas(element, {
+        scale: 2, // Skala 2x untuk kualiti yang lebih baik
+        useCORS: true,
+        logging: false,
+        onrendered: function (canvas) {
+            const imgData = canvas.toDataURL('image/png');
+            
+            // Gunakan jsPDF untuk mencipta PDF dari imej
+            const pdf = new jsPDF({
+                orientation: 'portrait', // 'portrait' atau 'landscape'
+                unit: 'mm',
+                format: 'a4', // Saiz kertas
+            });
+
+            // Tambah imej ke dalam PDF
+            pdf.addImage(imgData, 'PNG', 10, 10, 190, 277); // x, y, lebar, tinggi (dalam mm)
+
+            // Simpan PDF
+            pdf.save(`invoice-${invoiceData.invoiceNumber}.pdf`);
+            
+            // Kembalikan butang ke keadaan asal
+            downloadBtn.innerHTML = originalIcon;
+            downloadBtn.style.pointerEvents = 'auto';
+        }
+    });
+}
+
+// --- EVENT LISTENER TAMBAHAN ---
+document.addEventListener('DOMContentLoaded', () => {
+    // ... (kod sedia ada anda) ...
+
+    // Tambah event listener untuk butang muat turun
+    const downloadPdfBtn = document.getElementById('download-pdf-btn');
+    if (downloadPdfBtn) {
+        downloadPdfBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Elakkan pautan #
+            generatePDF();
+        });
+    }
+    
+    // ... (kod sedia ada anda di bahagian bawah) ...
+});

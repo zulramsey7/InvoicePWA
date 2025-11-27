@@ -9,6 +9,12 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
 
+<!-- ... di dalam <head>, sebelum </head> -->
+
+<!-- Pustaka untuk menjana PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,6 +32,10 @@
         <a href="dashboard.html" class="btn-back"><i class="fas fa-arrow-left"></i> Kembali ke Dashboard</a>
         <button onclick="window.print()" class="btn-print"><i class="fas fa-print"></i> Cetak</button>
     </div>
+<!-- ... di dalam <div class="invoice-actions"> ... -->
+    <a href="#" title="Cetak" onclick="window.print()"><i class="fas fa-print"></i></a>
+    <a href="#" id="download-pdf-btn" title="Muat Turun PDF"><i class="fas fa-file-pdf"></i></a>
+    <!-- ... -->
 
     <div class="invoice-container" id="invoice-container">
         <!-- Konten invois akan dihasilkan oleh JavaScript -->
