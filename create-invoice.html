@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PERUBAHAN 1: Tambah id="page-title" -->
+    <title id="page-title">Cipta Invois Baru - InvoicePWA</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Create Invoice Stylesheet -->
+    <link rel="stylesheet" href="create-invoice-styles.css">
+</head>
+<body>
+
+    <header class="form-header">
+        <div class="header-left">
+            <a href="dashboard.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+            <!-- PERUBAHAN 2: Tambah id="form-title" -->
+            <h1 id="form-title">Cipta Invois Baru</h1>
+        </div>
+        <div class="header-right">
+            <button id="save-draft-btn" class="btn-secondary">Simpan Draf</button>
+            <!-- PERUBAHAN 3: Tambah <span> dengan id="save-btn-text" -->
+            <button id="save-invoice-btn" class="btn-primary"><i class="fas fa-save"></i> <span id="save-btn-text">Simpan & Hantar</span></button>
+        </div>
+    </header>
+
+    <main class="form-main">
+        <form id="invoice-form">
+            <div class="form-container">
+                <!-- Butiran Syarikat & Invois -->
+                <section class="form-section company-details-section">
+                    <div class="company-details">
+                        <div class="logo-container">
+                            <img id="company-logo" src="https://i.ibb.co/W4N67t8m/bekna.png" alt="Logo Syarikat">
+                        </div>
+                        <div class="company-info">
+                            <input type="text" id="company-name" placeholder="Nama Syarikat Anda" value="Fashion Store Sdn Bhd">
+                            <textarea id="company-address" rows="2" placeholder="Alamat Syarikat">123, Jalan Utama, Taman Fashion, 12345 Kuala Lumpur</textarea>
+                            <input type="email" id="company-email" placeholder="Email Syarikat" value="info@fashionstore.com">
+                            <input type="tel" id="company-phone" placeholder="No. Telefon" value="+60 12-345 6789">
+                        </div>
+                    </div>
+                    <div class="invoice-details-grid">
+                        <div class="form-group">
+                            <label for="invoice-number">No. Invois</label>
+                            <input type="text" id="invoice-number" value="INV-008" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="po-number">No. PO (Pilihan)</label>
+                            <input type="text" id="po-number" placeholder="No. Pesanan Pembelian">
+                        </div>
+                        <div class="form-group">
+                            <label for="invoice-date">Tarikh</label>
+                            <input type="date" id="invoice-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="due-date">Tarikh Jatuh Tempo</label>
+                            <input type="date" id="due-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="invoice-status">Status Invois</label>
+                            <select id="invoice-status">
+                                <option value="draft">Draf</option>
+                                <option value="sent" selected>Dihantar</option>
+                                <option value="paid">Dibayar</option>
+                                <option value="overdue">Lewat</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Butiran Pelanggan -->
+                <section class="form-section">
+                    <h2><i class="fas fa-user"></i> Butiran Pelanggan</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="client-name">Nama Pelanggan</label>
+                            <input type="text" id="client-name" placeholder="Nama Syarikat atau Individu" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="client-email">Email</label>
+                            <input type="email" id="client-email" placeholder="email@pelanggan.com">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="client-address">Alamat</label>
+                            <textarea id="client-address" rows="3" placeholder="Alamat lengkap pelanggan"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Item Invois -->
+                <section class="form-section">
+                    <h2><i class="fas fa-tag"></i> Item Invois</h2>
+                    <div class="table-container">
+                        <table id="items-table">
+                            <thead>
+                                <tr>
+                                    <th>Kod Produk</th>
+                                    <th>Penerangan</th>
+                                    <th>Saiz</th>
+                                    <th>Kuantiti</th>
+                                    <th>Harga (RM)</th>
+                                    <th>Jumlah (RM)</th>
+                                    <th>Tindakan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="items-table-body">
+                                <!-- Baris item akan ditambah oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" id="add-item-btn" class="btn-secondary"><i class="fas fa-plus"></i> Tambah Item</button>
+                </section>
+
+                <!-- Catatan & Ringkasan Jumlah -->
+                <section class="form-section summary-section">
+                    <div class="notes-section">
+                        <label for="notes">Catatan / Terma Pembayaran</label>
+                        <textarea id="notes" rows="3" placeholder="Sebarang maklumat tambahan..."></textarea>
+                    </div>
+
+                    <!-- BUTIRAN PEMBAYARAN -->
+                    <div class="bank-details-section">
+                        <h3><i class="fas fa-university"></i> Butiran Pembayaran</h3>
+                        <div class="bank-info-grid">
+                            <div class="form-group">
+                                <label for="bank-name">Nama Bank</label>
+                                <input type="text" id="bank-name" placeholder="Contoh: Maybank Berhad">
+                            </div>
+                            <div class="form-group">
+                                <label for="account-name">Nama Akaun</label>
+                                <input type="text" id="account-name" placeholder="Nama pemilik akaun">
+                            </div>
+                            <div class="form-group">
+                                <label for="account-number">No. Akaun</label>
+                                <input type="text" id="account-number" placeholder="1234567890123" inputmode="numeric" pattern="[0-9]*">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <label>Jumlah (RM)</label>
+                            <span id="subtotal">0.00</span>
+                        </div>
+                        <div class="summary-item">
+                            <label for="discount">Diskaun (RM)</label>
+                            <input type="number" id="discount" value="0" min="0" step="0.01" inputmode="decimal">
+                        </div>
+                        <div class="summary-item">
+                            <label for="tax">Cukai (%)</label>
+                            <input type="number" id="tax" value="6" min="0" step="0.01" inputmode="decimal">
+                        </div>
+                        <div class="summary-item total">
+                            <label>Jumlah Keseluruhan (RM)</label>
+                            <span id="grand-total">0.00</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </main>
+
+    <!-- SEMUA SKRIPT DILETAKKAN DI BAWAH, SEBELUM </body> -->
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="firebase.js"></script>
+    <script src="create-invoice.js"></script>
+</body>
+</html>

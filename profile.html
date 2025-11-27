@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Syarikat - InvoicePWA</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Profile Stylesheet -->
+    <link rel="stylesheet" href="profile-styles.css">
+</head>
+<body>
+
+    <header class="form-header">
+        <div class="header-left">
+            <a href="dashboard.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+            <h1>Profil Syarikat</h1>
+        </div>
+        <div class="header-right">
+            <button id="save-profile-btn" class="btn-primary"><i class="fas fa-save"></i> Simpan Perubahan</button>
+        </div>
+    </header>
+
+    <main class="form-main">
+        <form id="profile-form">
+            <div class="form-container">
+                <section class="form-section">
+                    <h2><i class="fas fa-building"></i> Butiran Syarikat</h2>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="company-name">Nama Syarikat</label>
+                            <input type="text" id="company-name" placeholder="Nama Syarikat Anda">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="company-address">Alamat Syarikat</label>
+                            <textarea id="company-address" rows="3" placeholder="Alamat lengkap syarikat"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="company-email">Email Syarikat</label>
+                            <input type="email" id="company-email" placeholder="email@syarikat.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="company-phone">No. Telefon</label>
+                            <input type="tel" id="company-phone" placeholder="+60 12-345 6789">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="company-logo-url">URL Logo Syarikat (Pilihan)</label>
+                            <input type="url" id="company-logo-url" placeholder="https://contoh.com/logo.png">
+                            <small>Paste link gambar logo anda di sini. Untuk muat naik fail, gunakan perkhidmatan seperti Imgur.</small>
+                        </div>
+          <!-- ... selepas </section> pertama ... -->
+
+<!-- BUTIRAN PEMBAYARAN (BAHARU) -->
+<section class="form-section">
+    <h2><i class="fas fa-university"></i> Butiran Pembayaran</h2>
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="profile-bank-name">Nama Bank</label>
+            <input type="text" id="profile-bank-name" placeholder="Contoh: Maybank Berhad">
+        </div>
+        <div class="form-group">
+            <label for="profile-account-name">Nama Akaun</label>
+            <input type="text" id="profile-account-name" placeholder="Nama pemilik akaun">
+        </div>
+        <div class="form-group">
+            <label for="profile-account-number">No. Akaun</label>
+            <input type="text" id="profile-account-number" placeholder="1234567890123" inputmode="numeric" pattern="[0-9]*">
+        </div>
+    </div>
+</section>
+
+</form>
+</main>
+<!-- ... skrip di bawah ... -->
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="firebase.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>

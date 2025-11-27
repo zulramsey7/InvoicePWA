@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lihat Invois - InvoicePWA</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- View Invoice Stylesheet -->
+    <link rel="stylesheet" href="view-invoice-styles.css">
+</head>
+<body>
+
+    <div class="invoice-actions">
+        <a href="dashboard.html" class="btn-back"><i class="fas fa-arrow-left"></i> Kembali ke Dashboard</a>
+        <button onclick="window.print()" class="btn-print"><i class="fas fa-print"></i> Cetak</button>
+    </div>
+
+    <div class="invoice-container" id="invoice-container">
+        <!-- Konten invois akan dihasilkan oleh JavaScript -->
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="firebase.js"></script>
+    <script src="view-invoice.js"></script>
+</body>
+</html>

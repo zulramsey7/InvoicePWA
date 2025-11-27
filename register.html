@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akaun - InvoicePWA</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Register Stylesheet -->
+    <link rel="stylesheet" href="register-styles.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo-header">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <h1>InvoicePWA</h1>
+            </div>
+
+            <form id="register-form">
+                <h2>Daftar Akaun Baru</h2>
+                <p>Sertai kami untuk mula menguruskan invois anda</p>
+                
+                <div class="input-group">
+                    <label for="name">Nama Penuh</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="name" placeholder="Nama anda" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="nama@email.com" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Kata Laluan</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Masukkan kata laluan" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirm-password">Sahkan Kata Laluan</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirm-password" placeholder="Masukkan semula kata laluan" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <span>Daftar Sekarang</span>
+                </button>
+
+                <div id="message-container"></div>
+
+                <p class="signup-prompt">Sudah ada akaun? <a href="index.html">Log Masuk</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+<!-- Custom Scripts -->
+<script src="firebase.js"></script>
+<script src="register.js"></script>
+</body>
+</html>
