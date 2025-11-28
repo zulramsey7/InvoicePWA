@@ -16,117 +16,249 @@
 
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js for Performance Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Dashboard Stylesheet -->
     <link rel="stylesheet" href="dashboard-styles.css">
 </head>
 <body>
-
-
-    <header class="dashboard-header">
-        <div class="header-left">
-            <i class="fas fa-file-invoice-dollar"></i>
-            <h1>InvoicePWA</h1>
-        </div>
-        <div class="header-right">
-            <a href="profile.html" title="Profil Syarikat" class="profile-link"><i class="fas fa-user-cog"></i></a>
-            <span id="user-email" class="user-email">Loading...</span>
-            <button id="logout-btn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Log Keluar</button>
-        </div>
-    </header>
-
-    <main class="dashboard-main">
-        <div class="dashboard-content">
-            <!-- Action Bar -->
-            <div class="action-bar">
-                <h2>Ringkasan</h2>
-                <a href="create-invoice.html" class="btn-primary">
-                    <i class="fas fa-plus"></i> Cipta Invois Baru
-                </a>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>InvoicePWA</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="dashboard.html">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="create-invoice.html">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Cipta Invois</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="invoices.html">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>Semua Invois</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="clients.html">
+                            <i class="fas fa-users"></i>
+                            <span>Pelanggan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="reports.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Laporan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Tetapan</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-info">
+                        <div id="user-email" class="user-email">Loading...</div>
+                        <a href="#" id="logout-btn" class="logout-link">Log Keluar</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
 
-            <!-- Summary Cards -->
-            <section class="summary-cards">
-                <div class="card">
-                    <div class="card-icon">
-                        <i class="fas fa-file-invoice"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3 id="total-invoices">0</h3>
-                        <p>Jumlah Invois</p>
-                    </div>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Dashboard</h1>
                 </div>
-                <div class="card">
-                    <div class="card-icon paid">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3 id="paid-invoices">0</h3>
-                        <p>Dibayar</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon unpaid">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3 id="unpaid-invoices">0</h3>
-                        <p>Belum Dibayar</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon revenue">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3 id="total-revenue">RM 0</h3>
-                        <p>Jumlah Kutipan</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Invoices Table Section -->
-            <section class="invoices-section">
-                <div class="section-header">
-                    <h2>Invois Terkini</h2>
+                <div class="header-right">
                     <div class="search-bar">
                         <i class="fas fa-search"></i>
                         <input type="text" id="search-input" placeholder="Cari invois...">
                     </div>
+                    <a href="profile.html" title="Profil Syarikat" class="profile-link">
+                        <i class="fas fa-user-cog"></i>
+                    </a>
+                    <div class="notification-container">
+                        <button class="notification-btn" id="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <!-- Notification Dropdown -->
+                        <div class="notification-dropdown" id="notification-dropdown">
+                            <div class="notification-header">
+                                <h3>Notifikasi</h3>
+                                <button id="mark-all-read">Tandai semua dibaca</button>
+                            </div>
+                            <div class="notification-list" id="notification-list">
+                                <!-- Senarai notifikasi akan dihasilkan oleh JavaScript -->
+                            </div>
+                            <div class="notification-footer">
+                                <a href="notifications.html">Lihat Semua</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="table-container">
-                    <table id="invoices-table">
-                        <thead>
-                            <tr>
-                                <th>No. Invois</th>
-                                <th>Nama Pelanggan</th>
-                                <th>Tarikh Jatuh Tempo</th>
-                                <th>Jumlah (RM)</th>
-                                <th>Status</th>
-                                <th>Tindakan</th>
-                            </tr>
-                        </thead>
-                        <tbody id="invoices-table-body">
-                            <!-- Baris jadual akan dihasilkan oleh JavaScript -->
-                        </tbody>
-                    </table>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Summary Cards -->
+                <section class="summary-cards">
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3 id="total-invoices">0</h3>
+                            <p>Jumlah Invois</p>
+                            <div class="card-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>12% dari bulan lalu</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon paid">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3 id="paid-invoices">0</h3>
+                            <p>Dibayar</p>
+                            <div class="card-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>8% dari bulan lalu</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon unpaid">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3 id="unpaid-invoices">0</h3>
+                            <p>Belum Dibayar</p>
+                            <div class="card-change negative">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>5% dari bulan lalu</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon revenue">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3 id="total-revenue">RM 0</h3>
+                            <p>Jumlah Kutipan</p>
+                            <div class="card-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>23% dari bulan lalu</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Charts and Tables Section -->
+                <div class="dashboard-grid">
+                    <!-- Performance Chart -->
+                    <section class="chart-section">
+                        <div class="section-header">
+                            <h2>Prestasi Pendapatan</h2>
+                            <div class="chart-controls">
+                                <select id="chart-period">
+                                    <option value="month">Bulan Ini</option>
+                                    <option value="quarter">Suku Tahun Ini</option>
+                                    <option value="year">Tahun Ini</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="revenue-chart"></canvas>
+                        </div>
+                    </section>
+
+                    <!-- Invoice Status Distribution -->
+                    <section class="chart-section">
+                        <div class="section-header">
+                            <h2>Distribusi Status Invois</h2>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="status-chart"></canvas>
+                        </div>
+                    </section>
                 </div>
-            </section>
-        </div>
-    </main>
+
+                <!-- Recent Invoices Table -->
+                <section class="invoices-section">
+                    <div class="section-header">
+                        <h2>Invois Terkini</h2>
+                        <a href="invoices.html" class="view-all-link">Lihat Semua</a>
+                    </div>
+                    <div class="table-container">
+                        <table id="invoices-table">
+                            <thead>
+                                <tr>
+                                    <th>No. Invois</th>
+                                    <th>Nama Pelanggan</th>
+                                    <th>Tarikh Jatuh Tempo</th>
+                                    <th>Jumlah (RM)</th>
+                                    <th>Status</th>
+                                    <th>Tindakan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoices-table-body">
+                                <!-- Baris jadual akan dihasilkan oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
 
     <!-- PWA Install Banner -->
-<div id="pwa-install-banner" class="pwa-banner">
-    <div class="banner-content">
-        <i class="fas fa-download"></i>
-        <div class="banner-text">
-            <strong>Pasang InvoicePWA</strong>
-            <p>Dapatkan pengalaman yang lebih baik dan akses pantas dari skrin utama anda.</p>
+    <div id="pwa-install-banner" class="pwa-banner">
+        <div class="banner-content">
+            <i class="fas fa-download"></i>
+            <div class="banner-text">
+                <strong>Pasang InvoicePWA</strong>
+                <p>Dapatkan pengalaman yang lebih baik dan akses pantas dari skrin utama anda.</p>
+            </div>
+            <button id="pwa-install-button" class="banner-button">Pasang</button>
+            <button id="pwa-dismiss-button" class="banner-dismiss"><i class="fas fa-times"></i></button>
         </div>
-        <button id="pwa-install-button" class="banner-button">Pasang</button>
-        <button id="pwa-dismiss-button" class="banner-dismiss"><i class="fas fa-times"></i></button>
     </div>
-</div>
 
     <!-- SEMUA SKRIPT DILETAKKAN DI BAWAH, SEBELUM </body> -->
     <!-- Firebase SDK -->

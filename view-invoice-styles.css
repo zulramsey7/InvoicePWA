@@ -1,123 +1,210 @@
-:root {
-  --primary-color: #4f46e5;
-  --text-color: #1f2937;
-  --light-text-color: #6b7280;
-  --border-color: #e5e7eb;
-  --background-color: #f9fafb;
-  --font-family: 'Poppins', sans-serif;
-}
+document.addEventListener('DOMContentLoaded', () => {
+  // --- PENGESAHAN LOG MASUK ---
+  auth.onAuthStateChanged(user => {
+      if (!user) {
+          window.location.href = 'index.html';
+      } else {
+          // Jika pengguna log masuk, muatkan data invois
+          loadInvoiceData();
+      }
+  });
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color); padding: 20px; }
+  // --- ELEMEN DOM ---
+  const invoiceContainer = document.getElementById('invoice-container');
+  const downloadPdfBtn = document.getElementById('download-pdf-btn');
 
-/* --- Action Buttons --- */
-.invoice-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 900px;
-  margin: 0 auto 2rem auto;
-  padding: 0 10px;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.btn-back, .btn-print {
-  padding: 10px 20px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.3s;
-  flex: 1;
-  justify-content: center;
-}
-.btn-back { background-color: var(--light-text-color); color: white; }
-.btn-back:hover { background-color: #4b5563; }
-.btn-print { background-color: var(--primary-color); color: white; }
-.btn-print:hover { background-color: var(--primary-hover); }
+  // --- FUNGSI UNTUK MEMUATKAN DATA INVOIS ---
+  async function loadInvoiceData() {
+      // Dapatkan ID invois dari URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const invoiceId = urlParams.get('id');
 
-/* --- Invoice Container --- */
-.invoice-container {
-  max-width: 900px;
-  margin: 0 auto;
-  background: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
+      if (!invoiceId) {
+          invoiceContainer.innerHTML = '<p style="text-align:center; color:red;">Ralat: ID Invois tidak dijumpai.</p>';
+          return;
+      }
 
-/* --- Invoice Header --- */
-.invoice-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 20px;
-  margin-bottom: 30px;
-}
-.invoice-logo img { max-width: 120px; }
-.invoice-details h1 { color: var(--primary-color); font-size: 2rem; }
-.invoice-details p { color: var(--light-text-color); }
+      try {
+          const doc = await db.collection('invoices').doc(invoiceId).get();
 
-/* --- Company & Client Details --- */
-.invoice-billings {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  margin-bottom: 30px;
-}
-.invoice-billings h3 { font-size: 1rem; color: var(--light-text-color); margin-bottom: 10px; }
-.invoice-billings p { font-weight: 500; line-height: 1.6; }
-
-/* --- Invoice Table --- */
-.invoice-table { width: 100%; margin-bottom: 30px; border-collapse: collapse; }
-.invoice-table th, .invoice-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
-.invoice-table th { background-color: var(--background-color); font-weight: 600; color: var(--light-text-color); }
-.invoice-table td { font-weight: 500; }
-
-/* --- Invoice Summary --- */
-.invoice-summary {
-  display: flex;
-  justify-content: flex-end;
-}
-.invoice-summary table { width: 100%; max-width: 350px; }
-.invoice-summary td { padding: 10px; }
-.invoice-summary .label { font-weight: 600; color: var(--light-text-color); }
-.invoice-summary .total { font-size: 1.2rem; font-weight: 700; color: var(--text-color); border-top: 2px solid var(--border-color); padding-top: 1rem; margin-top: 1rem; }
-
-/* --- Notes & Payment Details --- */
-.invoice-footer { margin-top: 40px; border-top: 1px solid var(--border-color); padding-top: 20px; }
-.invoice-footer-notes { margin-bottom: 20px; }
-.invoice-footer-notes h3, .invoice-footer-payment h3 { font-size: 1rem; color: var(--light-text-color); margin-bottom: 10px; }
-.invoice-footer-payment p { font-size: 0.9rem; line-height: 1.6; }
-
-/* --- Print Styles --- */
-@media print {
-  body { background: white; padding: 0; }
-  .invoice-container { box-shadow: none; border-radius: 0; padding: 0; max-width: 100%; }
-  .invoice-actions { display: none; }
-  .invoice-table th { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; }
-}
-
-/* --- Responsive Design --- */
-@media (max-width: 768px) {
-  .invoice-header {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 20px;
+          if (doc.exists) {
+              const invoice = doc.data();
+              renderInvoice(invoice);
+          } else {
+              invoiceContainer.innerHTML = '<p style="text-align:center; color:red;">Ralat: Invois tidak wujud.</p>';
+          }
+      } catch (error) {
+          console.error("Error loading invoice:", error);
+          invoiceContainer.innerHTML = '<p style="text-align:center; color:red;">Gagal memuatkan invois.</p>';
+      }
   }
-  .invoice-billings {
-      grid-template-columns: 1fr;
-      gap: 20px;
+
+  // --- FUNGSI UNTUK MENAMPILKAN KANDUNGAN INVOIS KE DALAMAN HTML ---
+  function renderInvoice(invoice) {
+      // Format tarikh
+      const formatDate = (dateString) => new Date(dateString).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: '2-digit' });
+
+      // Buat baris jadual untuk butiran butiran
+      const itemsRows = invoice.items.map(item => `
+          <tr>
+              <td>${item.sku || '-'}</td>
+              <td>${item.description}</td>
+              <td>${item.size || '-'}</td>
+              <td>${item.quantity}</td>
+              <td>RM ${parseFloat(item.price).toLocaleString('en-MY')}</td>
+              <td>RM ${(item.quantity * item.price).toLocaleString('en-MY')}</td>
+          </tr>
+      `).join('');
+
+      // Buat HTML untuk keseluruhan invois
+      invoiceContainer.innerHTML = `
+          <header class="invoice-header">
+              <div class="invoice-details">
+                  <div class="invoice-logo">
+                      <img src="${invoice.companyLogo || 'https://via.placeholder.com/150'}" alt="Logo Syarikat">
+                  </div>
+                  <div class="invoice-details">
+                      <h1>INVOIS</h1>
+                      <p>No: ${invoice.invoiceNumber}</p>
+                      <p>Tarikh: ${formatDate(invoice.date)}</p>
+                      <p>Jatuh Tempo: ${formatDate(invoice.dueDate)}</p>
+                  </div>
+              </div>
+          </header>
+
+          <section class="invoice-billings">
+              <div class="invoice-billings">
+                  <h3>Dari:</h3>
+                  <p>${invoice.company.name}</p>
+                  <p>${invoice.company.address.replace(/\n/g, '<br>')}</p>
+                  <p>${invoice.company.email}</p>
+                  <p>${invoice.company.phone}</p>
+              </div>
+              <div class="invoice-billings">
+                  <h3>Kepada:</h3>
+                  <p>${invoice.client.name}</p>
+                  <p>${invoice.client.address.replace(/\n/g, '<br>')}</p>
+              </div>
+          </section>
+
+          <table class="invoice-table">
+              <thead>
+                  <tr>
+                      <th>No. Invois</th>
+                      <th>Penerangan</th>
+                      <th>Saiz</th>
+                      <th>Kuantiti</th>
+                      <th>Harga (RM)</th>
+                      <th>Jumlah (RM)</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  ${itemsRows}
+              </tbody>
+          </table>
+
+          <section class="invoice-summary">
+              <div class="invoice-summary">
+                  <table>
+                      <tr>
+                          <td class="label">Jumlah:</td>
+                          <td>RM ${parseFloat(invoice.subtotal).toLocaleString('en-MY')}</td>
+                      </tr>
+                      <tr>
+                          <td class="label">Cukai (${invoice.tax}%):</td>
+                          <td>RM ${((parseFloat(invoice.subtotal) * (parseFloat(invoice.tax) / 100)).toLocaleString('en-MY')}</td>
+                      </tr>
+                      <tr>
+                          <td class="label">Jumlah Keseluruhan (RM):</td>
+                          <td class="total">RM ${parseFloat(invoice.grandTotal).toLocaleString('en-MY')}</td>
+                      </tr>
+                  </table>
+              </div>
+          </section>
+
+          <section class="invoice-footer">
+              <div class="invoice-footer-notes">
+                  <h3>Nota & Terma Pembayaran</h3>
+                  <p>${invoice.notes || 'Tiada catatan tambahan.'}</p>
+              </div>
+
+              <div class="invoice-footer-payment">
+                  <h3>Butiran Pembayaran</h3>
+                  <p><strong>Bank:</strong> ${invoice.bankDetails.bankName}</p>
+                  <p><strong>Nama Akaun:</strong> ${invoice.bankDetails.accountName}</p>
+                  <p><strong>No. Akaun:</strong> ${invoice.bankDetails.accountNumber}</p>
+              </div>
+          </section>
+      `;
   }
-  .invoice-summary {
-      justify-content: center;
-      margin-top: 2rem;
+
+  // --- FUNGSI UNTUK MEMUATKAN PDF ---
+  function generatePDF() {
+      const element = document.getElementById('invoice-container');
+  
+      // Paparkan mesej loading
+      const downloadBtn = document.getElementById('download-pdf-btn');
+      const originalIcon = downloadBtn.innerHTML;
+      downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menjana...';
+      downloadBtn.style.pointerEvents = 'none'; // Lumpuhkan butang semasa proses
+
+      // Gunakan html2canvas untuk menjadikan elemen HTML menjadi imej
+      html2canvas(element, {
+          scale: 2, // Skala 2x untuk kualiti yang lebih baik
+          useCORS: true,
+          logging: false,
+          onrendered: function (canvas) {
+              const imgData = canvas.toDataURL('image/png');
+              
+              // Gunakan jsPDF untuk mencipta PDF dari imej
+              const { jsPDF } = window.jspdf;
+              
+              // Cipta dokumen PDF baru
+              const pdf = new jsPDF({
+                  orientation: 'portrait', // 'portrait' atau 'landscape'
+                  unit: 'mm', // Unit pengukuran (mm)
+                  format: 'a4', // Saiz kertas (A4, A3, dll.)
+              });
+
+              // Tambah imej (logo syarikat) ke dalam PDF
+              pdf.addImage(imgData, 'PNG', 10, 10, 190, 277); // x, y, lebar, tinggi (dalam mm)
+
+              // Tambah butiran jadual invois
+              invoice.items.forEach(item => {
+                  pdf.setFontSize(12);
+                  pdf.text(16, 20, 'Invois No. ' + item.sku);
+                  pdf.text(16, 28, item.description);
+                  pdf.text(16, 20, 'Saiz: ' + item.size);
+                  pdf.text(16, 20, ` + item.quantity + ' x ' + parseFloat(item.price).toFixed(2));
+                  pdf.text(16, 20, 'RM ' + (item.quantity * item.price).toFixed(2));
+                  pdf.text(16, 20, '---------------------------');
+              });
+
+              // Tambah butiran butiran
+              const grandTotal = parseFloat(invoice.grandTotal);
+              const taxAmount = (parseFloat(invoice.subtotal) * (parseFloat(invoice.tax) / 100);
+              const total = grandTotal + taxAmount;
+
+              pdf.setFontSize(12);
+              pdf.text(16, 20, 'Jumlah (RM):');
+              pdf.setFontSize(12);
+              pdf.text(16, 20, 'RM ' + grandTotal.toFixed(2));
+
+              // Simpan PDF
+              pdf.save(`invoice-${invoice.invoiceNumber}.pdf`);
+              
+              // Kembalikan butang ke keadaan asal
+              downloadBtn.innerHTML = originalIcon;
+              downloadBtn.style.pointerEvents = 'auto';
+          });
   }
-  .invoice-summary table { max-width: 100%; }
-}
+
+  // --- EVENT LISTENER ---
+  // Tambahkan event listener untuk butang muat turun PDF
+  const downloadPdfBtn = document.getElementById('download-pdf-btn');
+  if (downloadPdfBtn) {
+      downloadPdfBtn.addEventListener('click', () => {
+          generatePDF();
+      });
+  }
+});

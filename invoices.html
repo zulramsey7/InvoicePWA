@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senarai Invois - InvoicePWA</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Invoices Stylesheet -->
+    <link rel="stylesheet" href="invoices-styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <a href="dashboard.html" class="btn-icon" title="Kembali ke Dashboard">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 class="page-title">Senarai Invois</h1>
+            </div>
+            <div class="header-right">
+                <a href="create-invoice.html" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    <span>Cipta Invois Baru</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div class="invoices-layout">
+                <!-- Filters Sidebar -->
+                <aside class="filters-sidebar">
+                    <div class="filter-card">
+                        <h3 class="filter-title">Tapis mengikut Status</h3>
+                        <div class="filter-options">
+                            <button class="filter-btn active" data-filter="all">
+                                <i class="fas fa-list"></i>
+                                <span>Semua</span>
+                            </button>
+                            <button class="filter-btn" data-filter="draft">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Draf</span>
+                            </button>
+                            <button class="filter-btn" data-filter="sent">
+                                <i class="fas fa-envelope"></i>
+                                <span>Dihantar</span>
+                            </button>
+                            <button class="filter-btn" data-filter="paid">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Dibayar</span>
+                            </button>
+                            <button class="filter-btn" data-filter="overdue">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Lewat</span>
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Invoices List -->
+                <section class="invoices-section">
+                    <div class="section-header">
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-input" placeholder="Cari invois...">
+                        </div>
+                        <div class="view-options">
+                            <button class="view-btn active" data-view="list" title="Paparan Senarai">
+                                <i class="fas fa-list"></i>
+                            </button>
+                            <button class="view-btn" data-view="grid" title="Paparan Grid">
+                                <i class="fas fa-th"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="invoices-container" id="invoices-container">
+                        <!-- Invoice cards will be dynamically generated here by JavaScript -->
+                    </div>
+                    
+                    <div id="no-invoices-message" class="no-data-message" style="display: none;">
+                        <div class="no-data-icon">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <h3>Anda belum mempunyai sebarang invois.</h3>
+                        <p>Cipta invois pertama anda untuk mula menguruskan kewangan perniagaan anda.</p>
+                        <a href="create-invoice.html" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            <span>Cipta Invois Pertama Anda</span>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Memproses...</p>
+    </div>
+
+    <!-- Success Notification -->
+    <div id="success-notification" class="notification success">
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span>Tindakan berjaya!</span>
+        </div>
+    </div>
+
+    <!-- Error Notification -->
+    <div id="error-notification" class="notification error">
+        <div class="notification-content">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>Ralat berlaku. Sila cuba lagi.</span>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="firebase.js"></script>
+    <script src="invoices.js"></script>
+</body>
+</html>
